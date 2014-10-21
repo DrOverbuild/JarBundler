@@ -66,7 +66,6 @@ public class Frame extends JFrame{
 
 	public JTextField outputDirectoryField;
 	public JTextField jarFileField;
-	public JTextField appNameField;
 	public JTextField mainClassNameField;
 	public JTextField iconFileFeild;
 	public JTextField versionStringField;
@@ -80,7 +79,15 @@ public class Frame extends JFrame{
 		
 		bundleThread = () -> bundle();
 		
-		JPanel panel8 = new JPanel(new GridLayout(5,1));
+		JPanel panel8 = new JPanel(new GridLayout(6,1));
+		JPanel panel9 = new JPanel(new GridLayout(1, 2));
+		JButton openConfigFileButton = new JButton("Open Config...");
+		openConfigFileButton.addActionListener((ActionEvent e) -> OpenAndSaveFileManager.openFile(Frame.this));
+		panel9.add(openConfigFileButton);
+		JButton saveConfigFileButton = new JButton("Save Config...");
+		saveConfigFileButton.addActionListener((ActionEvent e) -> OpenAndSaveFileManager.saveFile(Frame.this));
+		panel9.add(saveConfigFileButton);
+		panel8.add(panel9);
 		JPanel panel1 = new JPanel(new BorderLayout());
 		panel1.setBorder(new EmptyBorder(2, 2, 2, 2));
 		outputDirectoryField = new JTextField(15);
