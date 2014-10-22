@@ -191,7 +191,7 @@ public class Frame extends JFrame{
 		JPanel panel7 = new JPanel(new BorderLayout());
 		buildButton.addActionListener((ActionEvent e) -> new Thread(bundleThread).start());
 		panel7.add(buildButton, BorderLayout.NORTH);
-		outputArea = new JTextArea(4,30);
+		outputArea = new JTextArea(6,30);
 		outputArea.setFont(new Font("Monospaced",Font.PLAIN,12));
 		outputArea.setForeground(Color.WHITE);
 		outputArea.setBackground(Color.BLACK);
@@ -201,8 +201,8 @@ public class Frame extends JFrame{
 		panel7.add(scrollPane,BorderLayout.CENTER);
 		add(panel7);
 
-		add(panel8, BorderLayout.CENTER);
-		add(panel7, BorderLayout.SOUTH);
+		add(panel8, BorderLayout.NORTH);
+		add(panel7, BorderLayout.CENTER);
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
