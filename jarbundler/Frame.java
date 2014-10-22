@@ -70,15 +70,16 @@ public class Frame extends JFrame{
 	public JTextField iconFileFeild;
 	public JTextField versionStringField;
 	public JTextArea outputArea;
-	
+	JButton buildButton = new JButton("Bundle");
+
 	Runnable bundleThread;
-	
+
 	public Frame(){
 		super("Jar Bundler");
 		setLayout(new BorderLayout());
-		
+
 		bundleThread = () -> bundle();
-		
+
 		JPanel panel8 = new JPanel(new GridLayout(6,1));
 		JPanel panel9 = new JPanel(new GridLayout(1, 2));
 		JButton openConfigFileButton = new JButton("Open Config...");
@@ -188,7 +189,6 @@ public class Frame extends JFrame{
 		panel8.add(panel6);
 
 		JPanel panel7 = new JPanel(new BorderLayout());
-		JButton buildButton = new JButton("Bundle");
 		buildButton.addActionListener((ActionEvent e) -> new Thread(bundleThread).start());
 		panel7.add(buildButton, BorderLayout.NORTH);
 		outputArea = new JTextArea(4,30);
@@ -203,7 +203,7 @@ public class Frame extends JFrame{
 
 		add(panel8, BorderLayout.CENTER);
 		add(panel7, BorderLayout.SOUTH);
-		
+
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
 		pack();
@@ -256,24 +256,29 @@ public class Frame extends JFrame{
 	}
 
 	private void bundle(){
+		buildButton.setEnabled(false);
+
 		outputArea.setText("");
-		
+
 		if(outputDirectoryFile == null || jarfileFile == null || iconFile == null){
 			JOptionPane.showMessageDialog(null, "Please fill in all the text fields.", "", JOptionPane.ERROR_MESSAGE);
+			buildButton.setEnabled(true);
 			return;
 		}
-				
+
 		enterText("Checking for Ant...");
 		if(!new File(ANT_INSTALLATION).exists()){
 			enterText("[Error] Ant was not found at " + ANT_INSTALLATION);
+			buildButton.setEnabled(true);
 			return;
 		}
-		
+
 		if (!new File(ANT_INSTALLATION + "/lib/appbundler-1.0.jar").exists()){
 			enterText("[Error] appbundler-1.0.jar not found at ANT_INSTALLATION/lib");
+			buildButton.setEnabled(true);
 			return;
 		}
-		
+
 
 
 		// Create build.xml file
@@ -289,6 +294,7 @@ public class Frame extends JFrame{
 
 		} catch (IOException ex) {
 			Logger.getLogger(Frame.class.getName()).log(Level.SEVERE, null, ex);
+			buildButton.setEnabled(true);
 			return;
 		} finally {
 			if(writer!=null){
@@ -299,7 +305,7 @@ public class Frame extends JFrame{
 				}
 			}
 		}
-		
+
 		// Bundle the app
 		enterText("Running Ant...");
 		Process bundleApp;
@@ -319,7 +325,7 @@ public class Frame extends JFrame{
 			buildDotXML.delete();
 
 			enterText("Done");
-			
+
 			enterText("Opening parent folder in default file browser");
 
 			// Show bundled app in file browser
@@ -333,8 +339,9 @@ public class Frame extends JFrame{
 			Logger.getLogger(Frame.class.getName()).log(Level.SEVERE, null, ex);
 		}
 
+		buildButton.setEnabled(true);
 	}
-	
+
 	public void enterText(String txt){
 		outputArea.setText(outputArea.getText() + txt + System.getProperty("line.separator"));
 		outputArea.setCaretPosition(outputArea.getText().length()-1);
