@@ -81,6 +81,11 @@ public class Frame extends JFrame{
 		super("Jar Bundler");
 		
 		this.properties = properties;
+		if (!properties.getProperty("version_string", JarBundler.VERSION_STRING).equals(JarBundler.VERSION_STRING)){
+			System.out.println("JarBundler has been opened for the first time in this version.");
+			properties.setProperty("version_string", JarBundler.VERSION_STRING);
+			JarBundler.saveSettings(properties);
+		}
 		
 		setLayout(new BorderLayout());
 

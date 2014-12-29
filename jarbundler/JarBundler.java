@@ -40,7 +40,8 @@ import java.util.Properties;
 public class JarBundler {
 	
 	public static final String SETTINGS_FILE_PATH = System.getProperty("user.home") + System.getProperty("file.separator") + ".jarbundler";
-
+	public static final String VERSION_STRING = "2.3";
+	
 	/**
 	 * @param args the command line arguments
 	 */
@@ -61,8 +62,17 @@ public class JarBundler {
 		}
 	}
 	
-	public static void saveSettings(Properties properties)throws IOException{
-		properties.store(new FileOutputStream(new File(SETTINGS_FILE_PATH)), "JarBundler Properties");
+	public static void saveSettings(Properties properties){
+		
+		try {
+			File f = new File(SETTINGS_FILE_PATH);
+			if(!f.exists()){
+				f.createNewFile();
+			}
+			properties.store(new FileOutputStream(f), "JarBundler Properties");
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	public static Properties getSettingsFromDisk() throws IOException{

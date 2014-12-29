@@ -30,7 +30,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.io.File;
-import java.io.IOException;
 import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -138,15 +137,10 @@ public class AntFinder extends JFrame{
 			Properties p = new Properties();
 			p.setProperty("path_to_ant", pathFieldForAnt.getText());
 			p.setProperty("path_to_appbuilder", pathFieldForAppbuilder.getText());
-			try {
-				if (new File(JarBundler.SETTINGS_FILE_PATH).createNewFile()) {
-					JarBundler.saveSettings(p);
-					dispose();
-					JarBundler.findAntAndStart();
-				}
-			}catch (IOException ex) {
-				
-			}
+			p.setProperty("version_string", "2.3");
+			JarBundler.saveSettings(p);
+			dispose();
+			JarBundler.findAntAndStart();
 		});
 		
 		pack();
