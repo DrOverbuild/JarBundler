@@ -26,19 +26,49 @@
 
 package jarbundler;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 /**
  *
  * @author jasper
  */
 public class JarBundler {
+	
+	public static final String SETTINGS_FILE_PATH = System.getProperty("user.home") + System.getProperty("file.separator") + ".jarbundler";
 
 	/**
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		new Frame();
-		//String quicktyper = "QuickTyper.app";
-		//System.out.println(quicktyper.substring(0, quicktyper.length()-4));
+		JarBundler.findAntAndStart();
+	
 	}
 
+	public static void findAntAndStart(){
+		try{
+			Properties p = getSettingsFromDisk();
+			
+			new Frame(p);
+		}catch(FileNotFoundException e){
+			new AntFinder();
+		}catch(IOException e){
+			
+		}
+	}
+	
+	public static void saveSettings(Properties properties)throws IOException{
+		properties.store(new FileOutputStream(new File(SETTINGS_FILE_PATH)), "JarBundler Properties");
+	}
+	
+	public static Properties getSettingsFromDisk() throws IOException{
+		Properties p = new Properties();
+		p.load(new FileInputStream(new File(SETTINGS_FILE_PATH)));
+		return p;
+	}
+	
 }

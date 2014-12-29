@@ -36,6 +36,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,6 +61,8 @@ public class Frame extends JFrame{
 	public static final String newline = System.getProperty("line.separator");
 	public static final String ANT_INSTALLATION = "/usr/share/java/ant";
 
+	Properties properties;
+	
 	File outputDirectoryFile;
 	File jarfileFile;
 	File iconFile;
@@ -74,8 +77,11 @@ public class Frame extends JFrame{
 
 	Runnable bundleThread;
 
-	public Frame(){
+	public Frame(Properties properties){
 		super("Jar Bundler");
+		
+		this.properties = properties;
+		
 		setLayout(new BorderLayout());
 
 		bundleThread = () -> bundle();
