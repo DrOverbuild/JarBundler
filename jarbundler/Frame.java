@@ -59,7 +59,8 @@ import javax.swing.filechooser.FileFilter;
 public class Frame extends JFrame{
 
 	public static final String newline = System.getProperty("line.separator");
-	public static final String ANT_INSTALLATION = "/usr/share/java/ant";
+	public static String antInstallation;
+	public static String appBundlerLocation;
 
 	Properties properties;
 	
@@ -86,6 +87,9 @@ public class Frame extends JFrame{
 			properties.setProperty("version_string", JarBundler.VERSION_STRING);
 			JarBundler.saveSettings(properties);
 		}
+		
+		antInstallation = properties.getProperty("path_to_ant", "/usr/share/java/ant");
+		appBundlerLocation = properties.getProperty("path_to_appbuilder");
 		
 		setLayout(new BorderLayout());
 
@@ -248,7 +252,7 @@ public class Frame extends JFrame{
 			"    <description>Temporary build config for ant script</description>" +newline+
 			"        <taskdef name=\"bundleapp\"" +newline+
 			"            classname=\"com.oracle.appbundler.AppBundlerTask\""+newline+
-			"            classpath=\"" + ANT_INSTALLATION + "/lib/appbundler-1.0.jar\" />"+newline+
+			"            classpath=\"" + appBundlerLocation + "\" />"+newline+
 			"        <target name=\"bundle-app\">"+newline+
 			"            <bundleapp outputdirectory=\"" + outputDirectory.getParent() + "\"" +newline+
             "                name=\""+name+"\"" +newline+
@@ -278,14 +282,18 @@ public class Frame extends JFrame{
 		}
 
 		enterText("Checking for Ant...");
-		if(!new File(ANT_INSTALLATION).exists()){
-			enterText("[Error] Ant was not found at " + ANT_INSTALLATION);
+		if(!new File(antInstallation).exists()){
+			enterText("[Error] Ant was not found at " + antInstallation);
+			enterText("Please restart JarBundler to fix problem.");
+			new File(JarBundler.SETTINGS_FILE_PATH).delete();
 			buildButton.setEnabled(true);
 			return;
 		}
 
-		if (!new File(ANT_INSTALLATION + "/lib/appbundler-1.0.jar").exists()){
-			enterText("[Error] appbundler-1.0.jar not found at ANT_INSTALLATION/lib");
+		if (!new File(appBundlerLocation).exists()){
+			enterText("[Error] appbundler-1.0.jar not found at " + appBundlerLocation);
+			enterText("Please restart JarBundler to fix problem.");
+			new File(JarBundler.SETTINGS_FILE_PATH).delete();
 			buildButton.setEnabled(true);
 			return;
 		}
@@ -321,7 +329,7 @@ public class Frame extends JFrame{
 		enterText("Running Ant...");
 		Process bundleApp;
 		try {
-			bundleApp = Runtime.getRuntime().exec(ANT_INSTALLATION + "/bin/ant bundle-app", new String[]{},parent);
+			bundleApp = Runtime.getRuntime().exec(antInstallation + " bundle-app", new String[]{},parent);
 			Scanner s = new Scanner(bundleApp.getInputStream());
 			while (s.hasNext()){
 				try{

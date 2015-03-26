@@ -137,7 +137,7 @@ public class AntFinder extends JFrame{
 			Properties p = new Properties();
 			p.setProperty("path_to_ant", pathFieldForAnt.getText());
 			p.setProperty("path_to_appbuilder", pathFieldForAppbuilder.getText());
-			p.setProperty("version_string", "2.3");
+			p.setProperty("version_string", JarBundler.VERSION_STRING);
 			JarBundler.saveSettings(p);
 			dispose();
 			JarBundler.findAntAndStart();
