@@ -198,7 +198,7 @@ public class Frame extends JFrame{
 
 		JPanel panel10 = new JPanel(new BorderLayout());
 		panel10.add(new JLabel("Working Directory: "), BorderLayout.WEST);
-		workingDirectoryComboBox = new JComboBox<>(new String[]{"User Home Directory", "App Location", "Resource Directory"});
+		workingDirectoryComboBox = new JComboBox<>(new String[]{"User Home Directory", "App Location (APP_ROOT/..)", "APP_ROOT/Contents/Resources/"});
 		panel10.add(workingDirectoryComboBox,BorderLayout.CENTER);
 		northPanel.add(panel10);
 
@@ -234,7 +234,7 @@ public class Frame extends JFrame{
 		super.dispose();
 	}
 
-	public static String xmlBuildFile(File outputDirectory, File jarFile, String mainClassName, String shortVersionString, File icon){
+	public static String xmlBuildFile(File outputDirectory, File jarFile, String mainClassName, String shortVersionString, String workingDir, File icon){
 		String name = "";
 		if(outputDirectory.getName().endsWith(".app")){
 			name = outputDirectory.getName().substring(0,outputDirectory.getName().length()-4);
@@ -246,24 +246,25 @@ public class Frame extends JFrame{
 			shortVersionString = "1.0";
 		}
 
-		String returnS = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + newline +
+		String returnS = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"                                              +newline+
 			"<project name=\"tempBuildFile\" default=\"default\" basedir=\"" + outputDirectory.getParent() + "\">" +newline+
-			"    <description>Temporary build config for ant script</description>" +newline+
-			"        <taskdef name=\"bundleapp\"" +newline+
-			"            classname=\"com.oracle.appbundler.AppBundlerTask\""+newline+
-			"            classpath=\"" + appBundlerLocation + "\" />"+newline+
-			"        <target name=\"bundle-app\">"+newline+
-			"            <bundleapp outputdirectory=\"" + outputDirectory.getParent() + "\"" +newline+
-            "                name=\""+name+"\"" +newline+
-            "                displayname=\""+name+"\"" +newline+
-            "                identifier=\""+mainClassName+"\"" +newline+
-			"                shortversion=\""+shortVersionString+"\""+newline+
-			"                icon=\""+icon.getAbsolutePath()+"\""+newline+
-            "                mainclassname=\""+mainClassName+"\">" +newline+
-            "                <classpath file=\"" + jarFile.getAbsolutePath() + "\"/>" +newline+
-			"                <option value=\"-Dapple.laf.useScreenMenuBar=true\"/>" +newline+
-			"            </bundleapp>" +newline+
-			"        </target>" +newline+
+			"    <description>Temporary build config for ant script</description>"                                 +newline+
+			"        <taskdef name=\"bundleapp\""                                                                  +newline+
+			"            classname=\"com.oracle.appbundler.AppBundlerTask\""                                       +newline+
+			"            classpath=\"" + appBundlerLocation + "\" />"                                              +newline+
+			"        <target name=\"bundle-app\">"                                                                 +newline+
+			"            <bundleapp outputdirectory=\"" + outputDirectory.getParent() + "\""                       +newline+
+            "                name=\""+name+"\""                                                                    +newline+
+            "                displayname=\""+name+"\""                                                             +newline+
+            "                identifier=\""+mainClassName+"\""                                                     +newline+
+			"                shortversion=\""+shortVersionString+"\""                                              +newline+
+			"                icon=\""+icon.getAbsolutePath()+"\""                                                  +newline+
+            "                mainclassname=\""+mainClassName+"\">"                                                 +newline+
+            "                <classpath file=\"" + jarFile.getAbsolutePath() + "\"/>"                              +newline+
+			"                <option value=\"-Dapple.laf.useScreenMenuBar=true\"/>"                                +newline+
+			workingDir +
+			"            </bundleapp>"                                                                             +newline+
+			"        </target>"                                                                                    +newline+
 			"    </project>";
 
 		return returnS;
@@ -297,17 +298,21 @@ public class Frame extends JFrame{
 			return;
 		}
 
-
-
 		// Create build.xml file
 		enterText("Generating build.xml...");
 		File parent = outputDirectoryFile.getParentFile();
+		String workingDir = "";
+		if(workingDirectoryComboBox.getSelectedItem().equals("App Location (APP_ROOT/..)")){
+			workingDir = "<option value=\"-Duser.dir=$APP_ROOT/..\"/>" + newline;
+		}else if (workingDirectoryComboBox.getSelectedItem().equals("APP_ROOT/Contents/Resources/")){
+			workingDir = "<option value=\"-Duser.dir=$APP_ROOT/Contents/Resources\"/>" + newline;
+		}
 		File buildDotXML = new File(parent, "build.xml");
 		BufferedWriter writer = null;
 		try {
 			buildDotXML.createNewFile();
 			writer = new BufferedWriter(new FileWriter(buildDotXML));
-			writer.write(xmlBuildFile(outputDirectoryFile, jarfileFile, mainClassNameField.getText(), versionStringField.getText(), iconFile));
+			writer.write(xmlBuildFile(outputDirectoryFile, jarfileFile, mainClassNameField.getText(), versionStringField.getText(), workingDir, iconFile));
 			writer.flush();
 
 		} catch (IOException ex) {
