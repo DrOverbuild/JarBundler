@@ -40,7 +40,7 @@ import java.util.Properties;
 public class JarBundler {
 	
 	public static final String SETTINGS_FILE_PATH = System.getProperty("user.home") + System.getProperty("file.separator") + ".jarbundler";
-	public static final String VERSION_STRING = "2.3";
+	public static final String VERSION_STRING = "2.4";
 	
 	/**
 	 * @param args the command line arguments

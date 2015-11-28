@@ -80,7 +80,8 @@ public class OpenAndSaveFileManager {
 						frame.jarFileField.getText() + Frame.newline +
 						frame.mainClassNameField.getText() + Frame.newline +
 						frame.iconFileFeild.getText() + Frame.newline +
-						frame.versionStringField.getText());
+						frame.versionStringField.getText() + Frame.newline +
+						frame.workingDirectoryComboBox.getSelectedIndex());
 				writer.flush();
 			}
 			
@@ -121,6 +122,7 @@ public class OpenAndSaveFileManager {
 			frame.iconFileFeild.setText(list.get(4));
 			frame.iconFile = new File(list.get(4));
 			frame.versionStringField.setText(list.get(5));
+			frame.workingDirectoryComboBox.setSelectedIndex(Integer.parseInt(list.get(6)));
 			
 		} catch (FileNotFoundException | ArrayIndexOutOfBoundsException ex) {
 			Logger.getLogger(OpenAndSaveFileManager.class.getName()).log(Level.SEVERE, null, ex);
