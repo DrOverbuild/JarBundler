@@ -40,15 +40,7 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
 
@@ -74,6 +66,7 @@ public class Frame extends JFrame{
 	public JTextField iconFileFeild;
 	public JTextField versionStringField;
 	public JTextArea outputArea;
+	public JComboBox<String> workingDirectoryComboBox;
 	JButton buildButton = new JButton("Bundle");
 
 	Runnable bundleThread;
@@ -95,7 +88,7 @@ public class Frame extends JFrame{
 
 		bundleThread = () -> bundle();
 
-		JPanel panel8 = new JPanel(new GridLayout(6,1));
+		JPanel northPanel = new JPanel(new GridLayout(7,1));
 		JPanel panel9 = new JPanel(new GridLayout(1, 2));
 		JButton openConfigFileButton = new JButton("Open Config...");
 		openConfigFileButton.addActionListener((ActionEvent e) -> OpenAndSaveFileManager.openFile(Frame.this));
@@ -103,7 +96,7 @@ public class Frame extends JFrame{
 		JButton saveConfigFileButton = new JButton("Save Config...");
 		saveConfigFileButton.addActionListener((ActionEvent e) -> OpenAndSaveFileManager.saveFile(Frame.this));
 		panel9.add(saveConfigFileButton);
-		panel8.add(panel9);
+		northPanel.add(panel9);
 		JPanel panel1 = new JPanel(new BorderLayout());
 		panel1.setBorder(new EmptyBorder(2, 2, 2, 2));
 		outputDirectoryField = new JTextField(15);
@@ -131,7 +124,7 @@ public class Frame extends JFrame{
 		panel1.add(new JLabel("Save output file as: "), BorderLayout.WEST);
 		panel1.add(outputDirectoryField, BorderLayout.CENTER);
 		panel1.add(chooseButton, BorderLayout.EAST);
-		panel8.add(panel1);
+		northPanel.add(panel1);
 
 		JPanel panel3 = new JPanel(new BorderLayout());
 		panel3.setBorder((new EmptyBorder(2, 2, 2, 2)));
@@ -159,14 +152,14 @@ public class Frame extends JFrame{
 		panel3.add(new JLabel("Jar file: "), BorderLayout.WEST);
 		panel3.add(jarFileField, BorderLayout.CENTER);
 		panel3.add(openButton, BorderLayout.EAST);
-		panel8.add(panel3);
+		northPanel.add(panel3);
 
 		JPanel panel4 = new JPanel(new BorderLayout());
 		panel4.setBorder(new EmptyBorder(2, 2, 2, 2));
 		mainClassNameField = new JTextField(15);
 		panel4.add(new JLabel("Main class: "), BorderLayout.WEST);
 		panel4.add(mainClassNameField, BorderLayout.CENTER);
-		panel8.add(panel4);
+		northPanel.add(panel4);
 
 		JPanel panel5 = new JPanel(new BorderLayout());
 		panel5.setBorder((new EmptyBorder(2, 2, 2, 2)));
@@ -194,18 +187,25 @@ public class Frame extends JFrame{
 		panel5.add(new JLabel("Icon: "), BorderLayout.WEST);
 		panel5.add(iconFileFeild, BorderLayout.CENTER);
 		panel5.add(openButton2, BorderLayout.EAST);
-		panel8.add(panel5);
+		northPanel.add(panel5);
 
 		JPanel panel6 = new JPanel(new BorderLayout());
 		panel6.setBorder(new EmptyBorder(2, 2, 2, 2));
 		versionStringField = new JTextField(15);
 		panel6.add(new JLabel("Version String: "), BorderLayout.WEST);
 		panel6.add(versionStringField, BorderLayout.CENTER);
-		panel8.add(panel6);
+		northPanel.add(panel6);
 
-		JPanel panel7 = new JPanel(new BorderLayout());
+		JPanel panel10 = new JPanel(new BorderLayout());
+		panel10.add(new JLabel("Working Directory: "), BorderLayout.WEST);
+		workingDirectoryComboBox = new JComboBox<>(new String[]{"User Home Directory", "App Location", "Resource Directory"});
+		panel10.add(workingDirectoryComboBox,BorderLayout.CENTER);
+		northPanel.add(panel10);
+
+
+		JPanel consolePanel = new JPanel(new BorderLayout());
 		buildButton.addActionListener((ActionEvent e) -> new Thread(bundleThread).start());
-		panel7.add(buildButton, BorderLayout.NORTH);
+		consolePanel.add(buildButton, BorderLayout.NORTH);
 		outputArea = new JTextArea(6,30);
 		outputArea.setFont(new Font("Monospaced",Font.PLAIN,12));
 		outputArea.setForeground(Color.WHITE);
@@ -213,11 +213,10 @@ public class Frame extends JFrame{
 		outputArea.setLineWrap(true);
 		outputArea.setEditable(false);
 		JScrollPane scrollPane = new JScrollPane(outputArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		panel7.add(scrollPane,BorderLayout.CENTER);
-		add(panel7);
+		consolePanel.add(scrollPane,BorderLayout.CENTER);
 
-		add(panel8, BorderLayout.NORTH);
-		add(panel7, BorderLayout.CENTER);
+		add(northPanel, BorderLayout.NORTH);
+		add(consolePanel, BorderLayout.CENTER);
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
